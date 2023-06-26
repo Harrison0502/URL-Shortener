@@ -1,11 +1,35 @@
-<form action="/url" method="POST">
-  <label for="originalURL">輸入原始網址：</label>
-  <input type="text" name="originalURL" id="originalURL" style="width: 500px;" value="{{originalURL}}"  required>
-  <button type="submit">生成短網址</button>
-</form>
+<div class="container my-5">
+  <div class="row my-5">
+    <img src="https://assets-lighthouse.alphacamp.co/uploads/image/file/16716/ExportedContentImage_00.png" class="mx-auto"
+      style="width: 20%" alt="url_image">
+  </div>
+  
+  <div class="row px-5 mb-3">
+    <form action="/url" method="POST">
+      <div class="row mt-3 justify-content-center input-group">
+        <input class="form-control bg-light text-secondary" type="text" placeholder="輸入原始網址" name="originalURL" required>
+        <button class="btn btn-outline-primary" type="submit" style="width: 20%">生成短網址</button>
+      </div>
+      {{#if shortenedURL}}
+      <div class="'row mt-5">
+        <h2>成功! 短網址為：</p>
+        <a href="{{shortenedURL}}" id="shortenedURL">http://localhost:3000/{{shortenedURL}}</a>
+        <button class="btn btn-primary ms-1" onclick="copy()" type="button">複製</button>
+      </div>
+      {{/if}}
+    </form>
+</div>
 
+<script>
+  function copy() {
+      const copyText = document.getElementById('shortenedURL').innerText;
+      navigator.clipboard.writeText(copyText)
+      .then(() => {
+        alert('短網址已複製到剪貼板！');
+      })
+      .catch((error) => {
+        console.error('複製到剪貼板失敗:', error);
+      });
+    }
+</script>
 
-{{#if shortenedURL}}
-  <p>成功!!! 短網址為：</p>
-  <a href="{{shortenedURL}}">http://localhost:3000/{{shortenedURL}}</a>
-{{/if}}
