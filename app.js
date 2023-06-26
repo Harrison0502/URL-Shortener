@@ -5,6 +5,7 @@ const app = express()
 const URL = require('./models/URL') // 載入 Todo model
 const bodyParser = require('body-parser')
 const generateURL = require('./lib/generateURL')
+const isValidURL = require('./lib/isValidURL')
 
 // 加入這段 code, 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== 'production') {
@@ -34,17 +35,22 @@ app.get('/',(req,res)=>{
 //接收原始網址
 app.post('/url', (req, res) => {
   const originalURL = req.body.originalURL;
-  URL.findOne({ originalURL })
-    .then(existingURL => {
-      if (existingURL) {
-        return res.render('index', { originalURL, shortenedURL: existingURL.shortenedURL });
-      } else {
-        const shortenedURL = generateURL();
-        URL.create({ originalURL: originalURL, shortenedURL: shortenedURL })
-          .then(() => res.render('index', { originalURL, shortenedURL }))
-      }
-    })
-    .catch(error => console.log(error));
+  if (isValidURL(originalURL)){
+    URL.findOne({ originalURL })
+      .then(existingURL => {
+        if (existingURL) {
+          return res.render('index', { originalURL, shortenedURL: existingURL.shortenedURL });
+        } else {
+          const shortenedURL = generateURL();
+          URL.create({ originalURL: originalURL, shortenedURL: shortenedURL })
+            .then(() => res.render('index', { originalURL, shortenedURL }))
+        }
+      })
+      .catch(error => console.log(error));
+  }else{
+    res.render('error', { originalURL })
+  }
+
 
 })
 
